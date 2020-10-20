@@ -13,11 +13,11 @@ output:
 library(dplyr)
 ```
 
-Introduction 
+### Introduction 
 
-COVID-19 is an infectious disease caused by the most recently discovered coronavirus. The disease spreads primarily from person to person through small droplets from the nose or mouth when people with COVID-19 cough, sneeze or speak [1]. The current coronavirus disease COVID-19 pandemic is hitting the globe unprecedentedly. Lives have been taken, and economic activities have been stagnated. Thus, it is crucial for people to understand better this global pandemic's current situation and future development to be better prepared to solve this global crisis. In this report, we are using COVID-19 data gathered in the United States to make predictions for the future trend of COVID-19 and demonstrate the relationship between different attributes (e.g., race, age, and gender) and the affected population. 
+COVID-19 is an infectious disease caused by the most recently discovered coronavirus. The disease spreads primarily from person to person through small droplets from the nose or mouth when people with COVID-19 cough, sneeze or speak [1]. The current coronavirus disease COVID-19 pandemic is hitting the globe unprecedentedly. Lives have been taken, and economic activities have been stagnated. Thus, it is crucial for people to understand better this global pandemic's current situation and future development to be better prepared to solve this global crisis. In this report, we are using COVID-19 data gathered in the United States to make predictions for the future trend of COVID-19 and check if there is a relationship between date and cummulative cases. 
 
-Background 
+### Background 
 
 Among all the studies that focus on COVID-19, we find three sources interesting. The first is CDC’s own weekly report, it contains various data that can give us overview of the current situation. Another two researches analyze two different aspects. The data from Utah analyze the relationship between COVID-19 cases, hospitalization and Testing with level of deprivation in different area and relations to different races. Last research focuses on the Age distribution of the COVID-19 pandemic. 
 
@@ -27,6 +27,7 @@ The analysis on Utah is a regional analyze on COVID-19 Data. It analyzes cases, 
 
 The last research focus on the relationship between COVID-19 and ages. The first source states that highest infection and hospitalization rates are among older adults. The source researches the relationship of incidence in each age group with each month. And the weekly median age of people with COVID-19. It finds that the distribution tends to young adults from 20-39 years, younger adults are likely to contribute to community transmission of COVID-19[4]. 
 
+### Data
 
 ```{r}
 cov <- read.csv("COVID-19_Case_Surveillance_Public_Use_Data.csv")
