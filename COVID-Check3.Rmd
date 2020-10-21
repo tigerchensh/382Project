@@ -1,0 +1,46 @@
+---
+title: "COVID Check3"
+author: "Xiangnan Chen"
+date: "2020/10/20"
+output: html_document
+---
+
+
+## R Markdown
+
+Introduction 
+
+COVID-19 is an infectious disease caused by the most recently discovered coronavirus. The disease spreads primarily from person to person through small droplets from the nose or mouth when people with COVID-19 cough, sneeze or speak [1]. The current coronavirus disease COVID-19 pandemic is hitting the globe unprecedentedly. Lives have been taken, and economic activities have been stagnated. Thus, it is crucial for people to understand better this global pandemic's current situation and future development to be better prepared to solve this global crisis. In this report, we are using COVID-19 data gathered in the United States to make predictions for the future trend of COVID-19 and demonstrate the relationship between different attributes (e.g., race, age, and gender) and the affected population. 
+
+Background 
+
+Among all the studies that focus on COVID-19, we find three sources interesting. The first is CDC’s weekly report that gives an overview of the COVID-19 related hospitalizations and deathes. The data from Utah analyze the relationship between COVID-19 cases, hospitalization and Testing with level of deprivation in different areas within Utah. Last research focuses on the Age distribution of the COVID-19 pandemic. 
+
+The CDC report focuses on the relationship between COVID-19 related hospitalizations and mortality. It also includes categorical variables like age and race. The overall cumulative COVID-19 hospitalization rate is 174.8 per 100,000, with the highest rates in people aged 65 years and older (472.3 per 100,000) and 50–64 years (261.5 per 100,000).[2] Second report analyzes COVID-19 Data from Utah Department of Health. It analyzes the relationship between cases and Hospitalization; relationship between Testing and the level of deprivation.The report shows that the infection number of high-deprivation areas of Utah is three times higher than the lower-deprivation areas, so does the rates of hospitalization and testing[3].The last research focuses on the relationship between COVID-19 and ages.The source researches the relationship of incidence between each age group. It also calculates the weekly median age of people with COVID-19. The research shows that the distribution centers at age group from 20-39 years, which means that younger adults are more likely to contribute to community transmission of COVID-19[4].
+
+Our approach to COVID-19 is to analyzes the relationship between the overall cumulative number of cases and the CDC report date. Different from the previous studies, we are using cumulative number of cases. We believe that using the cumulative number can offer a better interpretability when constructing a model with date (Time serie data).
+
+```{r}
+library(dplyr)
+```
+
+```{r}
+cov <- read.csv("COVID-19_Case_Surveillance_Public_Use_Data.csv")
+```
+
+```{r}
+reportDate <- unique(cov$cdc_report_dt)
+case_date <- count(cov, cov$cdc_report_dt)
+case_date$date <- as.Date(case_date$`cov$cdc_report_dt`)
+case_date$date <- case_date$date - as.Date("2020-01-01")
+case_date$cum_case <- cumsum(case_date$n)
+```
+
+```{r}
+plot(case_date$date,case_date$cum_case,xlab="Case report date to CDC (0 as first date 2020-01-01)",ylab="culmulative Covid case number", main=" Culmulative Covid case number and CDC report date")
+```
+
+There is a strong positive nonlinear relationship between CDC report date and culmulative Covid case number. We can see that among the first 80 dates there are very few cases reported to CDC. After 100th day, there is a strong linear relatipinship between the CDC report date and culmulative Covid case number. To our surprise, there is not a obvious trend showing an increase in slope. In contrast, it is rather linear after 100th day.
+
+We are not using ''pos_spec_dt' and 'onset_dt', because we specifically choose to use CDC report date as our predictor variable.
+Currently, we are not using any categorical variables within our model, because we want to first see the relationship between the case number and the CDC report date. 
