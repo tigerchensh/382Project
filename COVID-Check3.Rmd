@@ -64,7 +64,7 @@ https://data.cdc.gov/Case-Surveillance/COVID-19-Case-Surveillance-Public-Use-Dat
 
 ### Appendix
 
-```{r, include=FALSE}
+```{r, echo=FALSE}
 data_dics <- data.frame("Column names"=NA, "Description"=NA, "Type"=NA)
 data_dics[1,] = c("cdc_report_dt", "Initial case report date to CDC", "Quantative: Date & Time")
 data_dics[2,] = c("pos_spec_dt", "Date of first positive specimen collection", "Quantative: Date & Time")
