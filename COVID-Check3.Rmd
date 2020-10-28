@@ -2,13 +2,20 @@
 title: "COVID Check3"
 author: "Chen, Xiangnan & Cui, Augustine"
 date: "2020/10/20"
-output: word_document
+output:
+  pdf_document: default
+  word_document: default
+  pandoc_args: --listings
+  includes:
+    in_header: preamble.tex
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, fig.width = 10, fig.height = 6.18, fig.align = "center")
 library(dplyr)
-
+library(kableExtra)
+knitr::opts_chunk$set(tidy.opts=list(width.cutoff=75), tidy=TRUE)
 ```
+
 
 ### Introduction 
 
@@ -78,5 +85,7 @@ data_dics[8,] = c("hosp_yn", "Hospitalization status: Yes/No", "Categorical: Tex
 data_dics[9,] = c("icu_yn", "ICU admission status: Yes/No", "Categorical: Text")
 data_dics[10,] = c("death_yn", "Death status: Yes/No ", "Categorical: Text")
 data_dics[11,] = c("medcond_yn", "Presence of underlying comorbidity or disease: Yes/No", "Categorical: Text")
-knitr::kable(data_dics)
+data_dics %>% kable(booktabs = TRUE, "latex") %>% 
+  kable_styling(latex_options = c("striped", "scale_down")) %>% 
+  column_spec(2, width = "20em")
 ```
