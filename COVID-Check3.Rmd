@@ -5,9 +5,6 @@ date: "2020/10/20"
 output:
   pdf_document: default
   word_document: default
-  pandoc_args: --listings
-  includes:
-    in_header: preamble.tex
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, fig.width = 10, fig.height = 6.18, fig.align = "center")
