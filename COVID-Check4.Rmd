@@ -49,12 +49,12 @@ plot(case_date$date,case_date$cum_case,xlab="Case report date to CDC (0 as first
 ```
 
 ```{r}
-plot(case_date$date[1:224],diff(case_date$cum_case),xlab="Case report date to CDC (0 as first date 2020-01-01)",ylab="Covid case number", main="Covid case number in the U.S. and CDC report date")
+plot(case_date$date,case_date$n,xlab="Case report date to CDC (0 as first date 2020-01-01)",ylab="Covid case number", main="Covid case number in the U.S. and CDC report date")
 ```
 
 
 ```{r}
-plot(case_date$date[1:223],diff(diff(case_date$cum_case)),xlab="Case report date to CDC (0 as first date 2020-01-01)",ylab="Change of Covid case number per day", main=" Change of Covid case number in the U.S. and CDC report date")
+plot(case_date$date,c(0,diff(case_date$n)),xlab="Case report date to CDC (0 as first date 2020-01-01)",ylab="Change of Covid case number per day", main=" Change of Covid case number in the U.S. and CDC report date")
 ```
 There is a strong positive nonlinear relationship between the CDC report date and cumulative Covid case number. We can see that among the first 80 dates--there are very few cases reported to CDC. After the 100th day, there is a strong linear relationship between the CDC report date and cumulative Covid case number. To our surprise, there is not an obvious trend showing an increase in slope. In contrast, it is rather linear after the 100th day.
 
@@ -67,7 +67,7 @@ plot(diffMod)
 ```
 
 ```{r}
-changeMod <- lm(diff(diff(case_date$cum_case))~case_date$date[1:223])
+changeMod <- lm(c(0,diff(case_date$n))~case_date$date)
 plot(changeMod)
 ```
 
