@@ -61,10 +61,6 @@ There is a strong positive nonlinear relationship between the CDC report date an
 We are not using date of first positive specimen collection('pos_spec_dt') and date of symptom onset ('onset_dt'), because we specifically choose to use the CDC report date as our predictor variable.
 We are currently not using any categorical variables within our model because we want first to see the relationship between the case number and the CDC report date. 
 
-```{r}
-diffMod <- lm(diff(case_date$cum_case)~case_date$date[1:224])
-plot(diffMod)
-```
 
 ```{r}
 changeMod <- lm(c(0,diff(case_date$n))~case_date$date)
