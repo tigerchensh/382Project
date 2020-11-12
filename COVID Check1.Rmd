@@ -3,8 +3,9 @@ title: "COVID Project"
 author: "Xiangnan Chen & Augistine Cui & Yiyuan Wang"
 date: "2020/9/14"
 output:
-  word_document: default
+  pdf_document: default
   html_document: default
+  word_document: default
 ---
 
 ## R Markdown
@@ -46,7 +47,7 @@ nrow(cov)
 ncol(cov)
 ```
 
-There are 3662325 observations and each observation contians 11 variables.
+There are `r nrow(cov)` observations and each observation contians `r ncol(cov)` variables.
 
 ```{r}
 reportDate <- unique(cov$cdc_report_dt)
@@ -69,40 +70,30 @@ plot(case_date$date,case_date$cum_case,xlab="Case report date to CDC (0 as first
 There is a strong positive nonlinear relationship between CDC report date and culmulative Covid case number.
 
 
-```{r}
-death <- count(cov, cov$death_yn)
-barplot(death$n, names.arg=death$`cov$death_yn`,xlab="Case death status", ylab="Count of number",main="Number of Covid cases and death status")
-```
 
-```{r}
-caseDeath <- cov[cov$death_yn=='Yes',]
-caseDeath_date <- count(caseDeath, caseDeath$cdc_report_dt)
-caseDeath_date$date <- as.Date(caseDeath_date$`caseDeath$cdc_report_dt`)
-caseDeath_date$date <- caseDeath_date$date - as.Date("2020-01-01")
-caseDeath_date$cum_case <- cumsum(caseDeath_date$n)
-```
-
-```{r}
-plot(caseDeath_date$date,caseDeath_date$n,xlab="Case report date to CDC (0 as first date 2020-01-01)",ylab="Covid death case", main=" Covid death case number and CDC report date")
-```
-
-There is a moderate positive linear relationship between CDC report date and Covid death case number.
-
-
-```{r}
-plot(caseDeath_date$date,caseDeath_date$cum_case,xlab="Case report date to CDC (0 as first date 2020-01-01)",ylab="culmulative Covid death case", main=" Culmulative Covid death case and CDC report date")
-```
-
-There is a strong positive nonlinear relationship between CDC report date and culmulative Covid death case number.
-
-
-
-
-
-
-Appendix Data:
+### Appendix Data:
 
 https://data.cdc.gov/Case-Surveillance/COVID-19-Case-Surveillance-Public-Use-Data/vbim-akqf
+
+
+```{r}
+data_dics <- data.frame("Column names"=NA, "Description"=NA, "Type"=NA)
+data_dics[1,] = c("cdc_report_dt", "Initial case report date to CDC", "Quantative: Date & Time")
+data_dics[2,] = c("pos_spec_dt", "Date of first positive specimen collection", "Quantative: Date & Time")
+data_dics[3,] = c("onset_dt", "Symptom onset date, if symptomatic", "Quantative: Date & Time")
+data_dics[4,] = c("current_status", "Case Status: Laboratory-confirmed case; Probable case", "Categorical: Text")
+data_dics[5,] = c("sex", "Sex: Male; Female", "Categorical: Text")
+data_dics[6,] = c("age_group", "Age Group: 0 - 9 Years; 10 - 19 Years; 20 - 39 Years; 40 - 49 Years; 50 - 59 Years; 60 - 69 Years; 70 - 79 Years; 
+80 + Years", "Categorical: Text")
+data_dics[7,] = c("Race and ethnicity (combined)", "Race and ethnicity (combined): Hispanic/Latino; American Indian / Alaska Native, Non-Hispanic; Asian, Non-Hispanic; Black, Non-Hispanic; Native Hawaiian / Other Pacific Islander, Non-Hispanic; White, Non-Hispanic; Multiple/Other, Non-Hispanic", "Categorical: Text")
+data_dics[8,] = c("hosp_yn", "Hospitalization status: Yes/No", "Categorical: Text")
+data_dics[9,] = c("icu_yn", "ICU admission status: Yes/No", "Categorical: Text")
+data_dics[10,] = c("death_yn", "Death status: Yes/No ", "Categorical: Text")
+data_dics[11,] = c("medcond_yn", "Presence of underlying comorbidity or disease: Yes/No", "Categorical: Text")
+knitr::kable(data_dics)
+```
+
+
 
 'cdc_report_dt':	Initial case report date to CDC (Date & Time)
 
