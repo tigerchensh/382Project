@@ -1,5 +1,5 @@
 ---
-title: "COVID Check4"
+title: "COVID-19 Cases Analysis"
 author: "Chen, Xiangnan & Cui, Augustine"
 date: "2020/11/5"
 output:
@@ -18,11 +18,11 @@ library(lmtest)
 knitr::opts_chunk$set(tidy.opts=list(width.cutoff=75), tidy=TRUE)
 ```
 
-### Introduction
+## Introduction
 
 COVID-19 is an infectious disease caused by the most recently discovered coronavirus. The disease spreads primarily from person to person through small droplets from the nose or mouth when people with COVID-19 cough, sneeze, or speak [1]. The current coronavirus disease COVID-19 pandemic is hitting the globe unprecedentedly. Lives have been taken, and economic activities have been stagnated. Thus, it is crucial for people to better understand this global pandemic's current situation and future development to be better prepared to solve this global crisis. In this report, we are using COVID-19 data gathered in the United States to check if there is a linear relationship between the date and the change of cases number. Our predictor variable is the case report date to CDC. The response variable is the change of cases number each day. We implement linear regression and construct a null hypothesis test to check if we can claim that there is a linear relationship between the change of cases number and the CDC report date.
 
-### Background
+## Background
 
 Among all the studies that focus on COVID-19, we find three sources interesting. The first is CDC’s weekly report that gives an overview of the COVID-19 related hospitalizations and deaths. The data from Utah analyzes the relationship between COVID-19 cases, hospitalization, and testing with the deprivation level in different areas within Utah. The third research focuses on the Age distribution of the COVID-19 pandemic. 
 
@@ -30,7 +30,7 @@ The CDC report focuses on the relationship between COVID-19 related hospitalizat
 
 Our approach to COVID-19 is to analyzes the relationship between the change of cases number and the CDC report date. Different from the previous studies, we are using the change of cases number. We believe that using the change of number can offer better interpretability when constructing a model with the date (Time series data). 
 
-### Data
+## Data
 
 ```{r}
 cov <- read.csv("COVID-19_Case_Surveillance_Public_Use_Data.csv")
@@ -40,7 +40,8 @@ There are three quantitative variables 'cdc_report_dt', 'pos_spec_dt' and 'onset
 
 There are `r nrow(cov)` observations and each observation contains `r ncol(cov)` variables.
 
-##### Data Preprocessing
+#### Data Preprocessing
+
 ```{r}
 reportDate <- unique(cov$cdc_report_dt)
 case_date <- count(cov, cov$cdc_report_dt)
@@ -61,7 +62,6 @@ We are not using the date of first positive specimen collection('pos_spec_dt') a
 We fitted a linear model, and the summary:
 ```{r}
 changeMod <- lm(c(0,diff(case_date$n))~case_date$date)
-## prettify(summary(changeMod)) %>% kable()
 summary(changeMod)
 ```
 
@@ -79,11 +79,11 @@ quantile(wildChangeMod$bootEstParam[,2], probs=c(0.025, 0.975))
 
 The 95% confidence interval for the estimate of the population slope is (-19.20775,21.84842). Since 0 is within the confidence interval, it is a plausible value. We cannot reject the null hypothesis and do not have evidence to support the claim that there is a linear relationship between the change of cases number and the CDC report date.
 
-### Conclusions
+## Conclusions
 
 Due to the null hypothesis test we conduct, we do not have evidence to support the claim that there is a linear relationship between the change of cases number and the CDC report date. It means that there is no evidence that the number of cases accelerates every day. This result offers us peace of mind that there is no evidence that the speed of infections accelerates. We hope this research can also help people that are frustrated about this global pandemic and give them an optimistic opinion about future development. However, since we are using time series data, we do not completely offset the time dependence variable. The null hypothesis may be conducted when errors are not independent. For further study, a specific time series analysis method should be implemented to offset the dependence and conduct the null hypothesis. 
 
-### References
+## References
 
 [1] Q&A on coronaviruses (COVID-19) https://www.who.int/emergencies/diseases/novel-coronavirus-2019/question-and-answers-hub/q-a-detail/q-a-coronaviruses 
 
@@ -96,7 +96,7 @@ Due to the null hypothesis test we conduct, we do not have evidence to support t
 [5] Centers for Disease Control and Prevention. COVID-19 Case Surveillance Public Use Data, September 30, 2020 
 https://data.cdc.gov/Case-Surveillance/COVID-19-Case-Surveillance-Public-Use-Data/vbim-akqf
 
-### Appendix I
+## Appendix I
 
 ```{r, echo=FALSE}
 data_dics <- data.frame("Column names"=NA, "Description"=NA, "Type"=NA)
@@ -118,7 +118,7 @@ data_dics %>% kable(booktabs = TRUE, "latex") %>%
 ```
 
 
-### Appendix II
+## Appendix II
 
 ```{r, echo = FALSE}
 par(mfrow=c(1,2))
