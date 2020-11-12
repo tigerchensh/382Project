@@ -20,7 +20,7 @@ knitr::opts_chunk$set(tidy.opts=list(width.cutoff=75), tidy=TRUE)
 
 ### Introduction
 
-COVID-19 is an infectious disease caused by the most recently discovered coronavirus. The disease spreads primarily from person to person through small droplets from the nose or mouth when people with COVID-19 cough, sneeze or speak [1]. The current coronavirus disease COVID-19 pandemic is hitting the globe unprecedentedly. Lives have been taken, and economic activities have been stagnated. Thus, it is crucial for people to understand better this global pandemic's current situation and future development to be better prepared to solve this global crisis. In this report, we are using COVID-19 data gathered in the United States to check if there is a linear relationship between date and change of number of cases. We implement linear regression and construct a null hypothesis to check if we can claim that there is a linear relationship between change of number of cases and the CDC report date.
+COVID-19 is an infectious disease caused by the most recently discovered coronavirus. The disease spreads primarily from person to person through small droplets from the nose or mouth when people with COVID-19 cough, sneeze or speak [1]. The current coronavirus disease COVID-19 pandemic is hitting the globe unprecedentedly. Lives have been taken, and economic activities have been stagnated. Thus, it is crucial for people to understand better this global pandemic's current situation and future development to be better prepared to solve this global crisis. In this report, we are using COVID-19 data gathered in the United States to check if there is a linear relationship between date and change of number of cases. Our predictor variable is the case report date to CDC. The response variable is the change of number of cases each day. We implement linear regression and construct a null hypothesis to check if we can claim that there is a linear relationship between change of number of cases and the CDC report date.
 
 ### Background
 
@@ -49,11 +49,12 @@ case_date$date <- case_date$date - as.Date("2020-01-01")
 case_date$cum_case <- cumsum(case_date$n)
 ```
 
+The response variable 'change of number of cases' is computed as the current date's number of cases minus the previous date's.The predictor variable is the CDC report date where the first date (2020-01-01) is considered date 0.
 
 ```{r}
 plot(case_date$date,c(0,diff(case_date$n)),xlab="Case report date to CDC (0 as first date 2020-01-01)",ylab="Change of Covid case number per day", main=" Change of Covid case number in the U.S. and CDC report date", type = "l")
 ```
-There is a positive nonlinear relationship between the CDC report date and change of Covid case number. We can see that among the first 80 dates--there are very few cases reported to CDC. After the 100th day, the curves stars to fade out and becomes like a fan shape. There is not an obvious trend showing an increase in slope. 
+There is a weak positive linear relationship between the CDC report date and change of Covid case number. We can see that among the first 80 dates--there are very few cases reported to CDC. After the 100th day, the line starts to vacillate and has a larger variability. There is not an obvious trend showing an increase in slope. 
 
 We are not using date of first positive specimen collection('pos_spec_dt') and date of symptom onset ('onset_dt'), because we specifically choose to use the CDC report date as our predictor variable.
 We are currently not using any categorical variables within our model because we want first to see the relationship between the case number and the CDC report date. 
@@ -79,9 +80,7 @@ quantile(wildChangeMod$bootEstParam[,2], probs=c(0.025, 0.975))
 
 95% confidence interval for estimate of the population slope is (-19.20775,21.84842). Since 0 is within the confidence interval, it is a plausible value. We cannot reject null hypothesis and do not have evidence to support the claim that there is a linear relationship between change of number of cases and the CDC report date.
 
-Besides, we also want to check if the population mean of changes of number of cases differs from 0.We set the significance level to alpha = 0.05.
-
-### Conclutions
+### Conclusions
 
 Due to the null hypothesis tests we conduct, we do not have evidence to support the claim that there is a linear relationship between change of number of cases and the CDC report date. It means that there is no evidence that the number of cases accelerates everyday. This result offers us a peace of mind that there is no evidence that the speed of infections accelerates. We hope this research can also help people that are frustrated about this global pandemic and give them a optimistic opinion about the future development. However, since we are using a time series data and we do not completely offset the time dependence variable. The null hypothesis may be conducted when errors are not independent. For further study, a specific time series analysis method should be implemented to offset the dependence and conduct the null hypothesis. 
 
@@ -127,25 +126,8 @@ par(mfrow=c(1,2))
 plot(changeMod,which = c(1,2))
 ```
 
-```{r}
-rs <- residuals(changeMod)
-acf(rs)
-```
-```{r}
-mod_new <- arima(x = c(0,diff(case_date$n)), order = c(0,0,1))
-print(mod_new)
-residuals(mod_new) %>% acf()
-coeftest(mod_new)
-```
-
-
-```{r}
-auto.arima(c(0,diff(case_date$n)))
-```
-
-
 Errors are independent:
-Since the change of number of cases is a time series data, there has a time dependence in the errors. We include the date as our predictor variable to offset the time dependence. The assumption that errors are independent is questionable, but we hope that including date as predictor variable make errors independent. According to the ACF diagram, we can observe a significant lag 1 correlation. So the data in the present day has a negative correlation with the data in the previous day. So we cannot claim that the errors are independent.
+Since the change of number of cases is a time series data, there has a time dependence in the errors. We include the date as our predictor variable to offset the time dependence. The assumption that errors are independent is questionable, but we hope that including date as predictor variable make errors independent. 
 
 Errors have mean 0:
 There does not appear to be a pattern away from the 0 horizontal line. It is reasonable to assume that errors have mean 0.
