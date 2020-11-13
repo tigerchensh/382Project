@@ -15,10 +15,26 @@ library(lmboot)
 library(papeR)
 library(forecast)
 library(lmtest)
+library(knitr)
 knitr::opts_chunk$set(tidy.opts=list(width.cutoff=75), tidy=TRUE)
 ```
 
-## Introduction
+```{r, include=FALSE}
+hook_output = knit_hooks$get('output')
+knit_hooks$set(output = function(x, options) {
+  # this hook is used only when the linewidth option is not NULL
+  if (!is.null(n <- options$linewidth)) {
+    x = knitr:::split_lines(x)
+    # any lines wider than n should be wrapped
+    if (any(nchar(x) > n)) x = strwrap(x, width = n)
+    x = paste(x, collapse = '\n')
+  }
+  hook_output(x, options)
+})
+```
+
+
+### Introduction
 
 COVID-19 is an infectious disease caused by the most recently discovered coronavirus. The disease spreads primarily from person to person through small droplets from the nose or mouth when people with COVID-19 cough, sneeze, or speak [1]. The current coronavirus disease COVID-19 pandemic is hitting the globe unprecedentedly. Lives have been taken, and economic activities have been stagnated. Thus, it is crucial for people to better understand this global pandemic's current situation and future development to be better prepared to solve this global crisis. In this report, we are using COVID-19 data gathered in the United States to check if there is a linear relationship between the date and the change of cases number. Our predictor variable is the case report date to CDC. The response variable is the change of cases number each day. We implement linear regression and construct a null hypothesis test to check if we can claim that there is a linear relationship between the change of cases number and the CDC report date.
 
@@ -52,8 +68,11 @@ case_date$cum_case <- cumsum(case_date$n)
 
 The response variable 'change of cases number' is computed as the current date's number of cases minus the previous date's. The predictor variable is the CDC report date, where the first date (2020-01-01) is considered date 0.
 
-```{r}
-plot(case_date$date,c(0,diff(case_date$n)),xlab="Case report date to CDC (0 as first date 2020-01-01)",ylab="Change of Covid cases number per day", main=" Change of Covid cases number in the U.S. and CDC report date", type = "l")
+```{r, linewidth=60}
+plot(case_date$date,c(0,diff(case_date$n)),
+     xlab="Case report date to CDC (0 as first date 2020-01-01)",
+     ylab="Change of Covid cases number per day", 
+     main=" Change of Covid cases number in the U.S. and CDC report date", type = "l")
 ```
 There is a weak positive linear relationship between the CDC report date and the change of Covid case number. We can see that among the first 80 dates--there are very few cases reported to CDC. After the 80th day, the line of points starts to vacillate and shows a higher variability. There is not an obvious trend showing an increase in slope. 
 
