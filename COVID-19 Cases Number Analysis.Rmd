@@ -3,8 +3,8 @@ title: "COVID-19 Cases Number Analysis"
 author: "Chen, Xiangnan & Cui, Augustine"
 date: "2020/11/12"
 output:
-  pdf_document: default
   word_document: default
+  pdf_document: default
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, fig.width = 10, fig.height = 6.18, fig.align = "center")
@@ -61,8 +61,9 @@ There are `r nrow(cov)` observations and each observation contains `r ncol(cov)`
 ```{r}
 reportDate <- unique(cov$cdc_report_dt)
 case_date <- count(cov, cov$cdc_report_dt)
+case_date <- case_date[75:nrow(case_date),]
 case_date$date <- as.Date(case_date$`cov$cdc_report_dt`)
-case_date$date <- case_date$date - as.Date("2020-01-01")
+case_date$date <- case_date$date - as.Date("2020-03-19")
 case_date$cum_case <- cumsum(case_date$n)
 ```
 
@@ -70,13 +71,13 @@ The response variable 'change of cases number' is computed as the current date's
 
 ```{r, linewidth=80}
 plot(case_date$date,c(0,diff(case_date$n)),
-     xlab="Case report date to CDC (0 as first date 2020-01-01)",
+     xlab="Case report date to CDC (0 as first date 2020-03-19)",
      ylab="Change of Covid cases number per day", 
      main=" Change of Covid cases number in the U.S. and CDC report date", type = "l")
 ```
-There is a weak positive linear relationship between the CDC report date and the change of Covid case number. We can see that among the first 80 dates--there are very few cases reported to CDC. After the 80th day, the line of points starts to vacillate and shows a higher variability. There is not an obvious trend showing an increase in slope. 
+There is a weak positive linear relationship between the CDC report date and the change of Covid case number. The line of points vacillates and shows a higher variability. There is not an obvious trend showing an increase in slope. 
 
-We are not using the date of first positive specimen collection('pos_spec_dt') and date of symptom onset ('onset_dt') because we specifically choose to use the CDC report date as our predictor variable. We are currently not using any categorical variables within our model because we want first to see the relationship between the case number and the CDC report date. 
+We are not using the date of first positive specimen collection('pos_spec_dt') and date of symptom onset ('onset_dt') because we specifically choose to use the CDC report date as our predictor variable. We are currently not using any categorical variables within our model because we want first to see the relationship between the case number and the CDC report date.We also remove the first 75th observations since there were few changes.
 
 We fitted a linear model, and the summary:
 ```{r}
@@ -96,11 +97,11 @@ wildChangeMod <- wild.boot(c(0,diff(case_date$n))~case_date$date, B=10000, seed=
 quantile(wildChangeMod$bootEstParam[,2], probs=c(0.025, 0.975))
 ```
 
-The 95% confidence interval for the estimate of the population slope is (-19.20775,21.84842). Since 0 is within the confidence interval, it is a plausible value. We cannot reject the null hypothesis and do not have evidence to support the claim that there is a linear relationship between the change of cases number and the CDC report date.
+The 95% confidence interval for the estimate of the population slope is (-33.04226,35.60287). Since 0 is within the confidence interval, it is a plausible value. We cannot reject the null hypothesis and do not have evidence to support the claim that there is a linear relationship between the change of cases number and the CDC report date.
 
 # Conclusions
 
-Based on the null hypothesis test we conduct, we do not have evidence to support the claim that there is a linear relationship between the change of cases number and the CDC report date. It means that there is no evidence that the number of cases accelerates every day. This result offers us peace of mind that there is no evidence that the speed of infections accelerates. We hope this research can also help people that are frustrated about this global pandemic and give them an optimistic opinion about future development. However, since we are using time series data, we do not completely offset the time dependence variable. The null hypothesis may be conducted when errors are not independent. For further study, a specific time series analysis method should be implemented to offset the dependence and conduct the null hypothesis. 
+Based on the null hypothesis test we conduct, we do not have evidence to support the claim that there is a linear relationship between the change of cases number and the CDC report date. It means that there is no evidence that the number of cases accelerates every day. This result offers us peace of mind that there is no evidence that the speed of infections accelerates. We hope this research can also help people that are frustrated about this global pandemic and give them an optimistic opinion about future development. However, since we are using time series data, we do not completely offset the time dependence variable. The null hypothesis may be conducted when errors are not independent. According to the ACF diagram in Appendix III, we can observe a significant lag 1 correlation. So the data in the present day has a negative correlation with the data in the previous day. For future study, a specific time series analysis method should be implemented to offset the dependence and conduct the null hypothesis. 
 
 # References
 
@@ -157,3 +158,11 @@ Errors are from normal distribution:
 There does appear to be a clear pattern away from the diagonal in the QQ plot. It is not reasonable to assume that errors come from a normal distribution.
 
 Since we can only assume that errors are independent and have mean 0, we implement wild bootstrap to further analysis. 
+
+# Appendix III
+
+```{r}
+rs <- residuals(changeMod)
+acf(rs)
+```
+
